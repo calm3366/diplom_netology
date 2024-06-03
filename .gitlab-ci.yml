@@ -13,10 +13,11 @@ variables:
 builder:
   stage: build
   script:
-    - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$IMAGE_TAG .
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker run $IMAGE_NAME:$IMAGE_TAG
 deployer:
   stage: deploy
   script:
-    - docker images
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
+    - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$IMAGE_TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$IMAGE_TAG
