@@ -1,0 +1,9 @@
+stages:
+  - build
+image: docker:20.10.5
+services:
+  - docker:20.10.5-dind
+builder:
+  stage: build
+  script:
+    - docker build -t netology-web .
