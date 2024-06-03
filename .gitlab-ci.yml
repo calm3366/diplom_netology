@@ -1,9 +1,21 @@
 stages:
   - build
+  - deploy
 image: docker:20.10.5
 services:
   - docker:20.10.5-dind
+variables:
+  YA_REGISTRY: cr.yandex
+  YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
+  IMAGE_NAME: netology-web
+  IMAGE_TAG: 3.3
 builder:
   stage: build
   script:
-    - docker build -t netology-web .
+    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+deployer:
+  stage: deploy
+  script:
+    # - docker build -t $CI_REGISTRY/calm3366/test/hello:gitlab-$CI_COMMIT_SHORT_SHA python_api/.
+    - docker login -u oauth --password-stdin $YA_REGISTRY
+    - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:IMAGE_TAG
