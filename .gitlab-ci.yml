@@ -1,9 +1,9 @@
-stages:
-  - build
-  - deploy
 image: docker:20.10.5
 services:
   - docker:20.10.5-dind
+stages:
+  - build
+  - deploy
 variables:
   YA_REGISTRY_LOGIN: oauth
   YA_REGISTRY: cr.yandex
@@ -13,10 +13,9 @@ variables:
 builder:
   stage: build
   script:
-    - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$IMAGE_TAG .
 deployer:
   stage: deploy
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
-    - docker tag $IMAGE_NAME $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$IMAGE_TAG
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$IMAGE_TAG
