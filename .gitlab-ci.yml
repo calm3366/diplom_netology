@@ -14,11 +14,12 @@ builder:
   stage: build
   script:
     - docker build -t $IMAGE_NAME:$IMAGE_TAG .
+    # - docker tag $IMAGE_NAME:latest $IMAGE_NAME:$IMAGE_TAG
 push_to_registry:
   stage: push
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
-    - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:IMAGE_TAG
+    - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$IMAGE_TAG
 # deployer:
 #   stage: deploy
 #   script:
