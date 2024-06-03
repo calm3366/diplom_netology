@@ -9,7 +9,7 @@ variables:
   YA_REGISTRY: cr.yandex
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
-  IMAGE_TAG: 3.3
+  IMAGE_TAG: latest
 builder:
   stage: build
   script:
