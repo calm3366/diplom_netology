@@ -21,6 +21,7 @@ builder:
       changes:
         - Dockerfile
         - html
+        - .gitlab-ci.yml
 deployer:
   stage: deploy
   script:
@@ -32,3 +33,4 @@ deployer:
       changes:
         - Dockerfile
         - html
+        - .gitlab-ci.yml
