@@ -31,6 +31,7 @@ builder:tag:
   stage: build-tag
   script:
     - docker logout
+    - echo $YA_REGISTRY_LOGIN
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG
