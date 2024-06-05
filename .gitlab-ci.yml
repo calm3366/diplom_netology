@@ -19,6 +19,7 @@ builder:latest:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest
+    - docker logout
   rules:
     - if: '$CI_COMMIT_TAG == null'
       changes:
@@ -32,6 +33,7 @@ builder:tag:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG
+    - docker logout
   rules:
     - if: $CI_COMMIT_TAG
       changes:
