@@ -16,7 +16,6 @@ variables:
 builder:latest:
   stage: build-latest
   script:
-    - docker logout
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest
@@ -25,14 +24,10 @@ builder:latest:
       changes:
         - Dockerfile
         - html/*
-        - .gitlab-ci.yml
 
 builder:tag:
   stage: build-tag
   script:
-    - env
-    - docker logout
-    - echo $YA_REGISTRY_LOGIN
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG
@@ -41,4 +36,3 @@ builder:tag:
       changes:
         - Dockerfile
         - html/*
-        - .gitlab-ci.yml
