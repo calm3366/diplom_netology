@@ -1,30 +1,34 @@
 image: docker:20.10.5
+
 services:
   - docker:20.10.5-dind
+
 stages:
-  - build
-  - deploy
+  - build-latest
+  - build-tag
+
 variables:
   YA_REGISTRY_LOGIN: oauth
   YA_REGISTRY: cr.yandex
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
   IMAGE_TAG: $CI_COMMIT_TAG
-builder:
-  stage: build
+
+builder:latest:
+  stage: build-latest
   script:
-    - docker build -t $IMAGE_NAME .
-    - echo "CI_COMMIT_TAG = $CI_COMMIT_TAG"
-    - echo "CI_COMMIT_BRANCH = $CI_COMMIT_BRANCH"
-    - env
+    - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
+    - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest .
+    - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest
   rules:
-    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG == 'null'
       changes:
         - Dockerfile
         - html/*
         - .gitlab-ci.yml
-deployer:
-  stage: deploy
+
+builder:tag:
+  stage: build-tag
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$IMAGE_TAG .
