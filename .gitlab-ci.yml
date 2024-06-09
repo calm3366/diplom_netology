@@ -1,10 +1,12 @@
-image: ubuntu:22.04
+image: alpine:3.20.0
 
 services:
   - docker:20.10.5-dind
+  - registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image
 
 stages:
   - build
+  - deploy
 
 variables:
   YA_REGISTRY_LOGIN: oauth
@@ -18,35 +20,15 @@ variables:
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
-# kubectl:
-#   stage: build
-#   script:
-#     - apt install curl
-#     - curl -LO https://dl.k8s.io/release/`curl -LS https://dl.k8s.io/release/stable.txt`/bin/linux/amd64/kubectl
-#     - chmod +x ./kubectl
-#     - sudo mv ./kubectl /usr/local/bin/kubectl
 
-
-test:
-  # extends: .kubectl
-  stage: build
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
+.kubectl:
+  stage: deploy
   script:
     - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
     - kubectl config set-credentials admin-user --token=$KUBE_TOKEN
     - kubectl config set-context default --cluster=k8s --user=admin-user
     - kubectl config use-context default
-    - kubectl get namespace
-   
-    # - kubectl get no
-    # - cat ~/.kube/config
-    # - mkdir -p $HOME/.kube
-    # - echo -n $KUBECONFIG > $HOME/.kube/config
-    # - kubectl cluster-info
-    # - sed -i -e "s/K8S_CERTIFICATE_AUTH/$K8S_CERTIFICATE_AUTH/" config
-    # - cp config /root/
-    # - ls /root/
-    
+    - kubectl get po
 
 builder_latest:
   extends: .docker_login
@@ -63,8 +45,8 @@ builder_latest:
 builder_tag:
   extends: 
     - .docker_login
-    # - .kubectl
-  stage: build
+    - .kubectl
+  stage: deploy
   script:
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG
