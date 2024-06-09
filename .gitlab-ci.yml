@@ -31,12 +31,13 @@ test:
   stage: build
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
-    - ls /
-    - kubectl cluster-info --kubeconfig $KUBECONFIG
+    - mkdir -p $HOME/.kube
+    - echo -n $KUBECONFIG > $HOME/.kube/config
+    - kubectl cluster-info
     # - sed -i -e "s/K8S_CERTIFICATE_AUTH/$K8S_CERTIFICATE_AUTH/" config
     # - cp config /root/
     # - ls /root/
-    - kubectl cluster-info 
+    # - kubectl cluster-info 
 
 builder_latest:
   extends: .docker_login
