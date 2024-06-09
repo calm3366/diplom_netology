@@ -15,12 +15,14 @@ variables:
   KUBE_URL: https://158.160.168.73
 
 
-before_script:
-  - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
+.docker_login:
+  stage: deploy
+  script:
+    - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
 
 .kubectl:
-  # image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   stage: deploy
   script:
     - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
@@ -42,6 +44,7 @@ builder_latest:
 
 builder_tag:
   extends: 
+    - .docker_login
     - .kubectl
   stage: deploy
   script:
