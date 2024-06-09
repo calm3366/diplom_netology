@@ -15,9 +15,8 @@ variables:
   IMAGE_NAME: netology-web
   KUBE_URL: https://158.160.168.73
 
-.docker_login:
-  stage: build
-  script:
+
+before_script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
 
@@ -31,7 +30,6 @@ variables:
     - kubectl get po
 
 builder_latest:
-  extends: .docker_login
   stage: build
   script:
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest .
@@ -44,7 +42,6 @@ builder_latest:
 
 builder_tag:
   extends: 
-    - .docker_login
     - .kubectl
   stage: deploy
   script:
