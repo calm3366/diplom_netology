@@ -20,7 +20,7 @@ before_script:
 
 
 .kubectl:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
+  # image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   stage: deploy
   script:
     - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
