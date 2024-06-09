@@ -4,8 +4,7 @@ services:
   - docker:20.10.5-dind
 
 stages:
-  - build-latest
-  - build-tag
+  - build
 
 variables:
   YA_REGISTRY_LOGIN: oauth
@@ -13,10 +12,32 @@ variables:
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
 
-builder:latest:
-  stage: build-latest
+.docker_login:
+  stage: build
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
+
+.kubectl:
+  stage: build
+  script:
+    - curl -LO https://dl.k8s.io/release/`curl -LS https://dl.k8s.io/release/stable.txt`/bin/linux/amd64/kubectl
+    - chmod +x ./kubectl
+    - sudo mv ./kubectl /usr/local/bin/kubectl
+
+
+test:
+  extends: .kubectl
+  stage: build
+  script:
+    - ls /
+    - ls /root/
+    - cat config
+    - cp config /root/
+
+builder_latest:
+  extends: .docker_login
+  stage: build
+  script:
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest
   rules:
@@ -25,12 +46,16 @@ builder:latest:
         - Dockerfile
         - html/*
 
-builder:tag:
-  stage: build-tag
+builder_tag:
+  extends: 
+    - .docker_login
+    - .kubectl
+  stage: build
   script:
-    - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG
+    - sed -i -e "s/IMAGE_TAG/$CI_COMMIT_TAG/" deployment-nginx.yaml
+    - kubectl apply -f deployment-nginx.yaml 
   rules:
     - if: $CI_COMMIT_TAG
       changes:
