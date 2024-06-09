@@ -11,7 +11,7 @@ variables:
   YA_REGISTRY: cr.yandex
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
-  KUBE_URL: https://158.160.168.73
+  KUBE_URL: https://158.160.168.73=$
 
 .docker_login:
   stage: build
@@ -33,8 +33,8 @@ test:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
     - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
-    - kubectl config set-credentials admin --token="$KUBE_TOKEN"
-    - kubectl config set-context default --cluster=k8s --user=admin
+    - kubectl config set-credentials admin-user --token="$KUBE_TOKEN"
+    - kubectl config set-context default --cluster=k8s --user=admin-user
     - kubectl config use-context default
     - kubectl cluster-info 
     # - mkdir -p $HOME/.kube
