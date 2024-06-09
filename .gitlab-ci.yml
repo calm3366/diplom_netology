@@ -37,7 +37,7 @@ test:
     - kubectl config set-context default --cluster=k8s --user=admin-user --kubeconfig=test.kubeconfig
     - kubectl config use-context default --kubeconfig=test.kubeconfig
     # - kubectl cluster-info 
-    - kubectl get no
+    # - kubectl get no
     - cat ~/.kube/config
     # - mkdir -p $HOME/.kube
     # - echo -n $KUBECONFIG > $HOME/.kube/config
