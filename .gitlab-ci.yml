@@ -16,7 +16,7 @@ variables:
 
 
 before_script:
-    - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
+  - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
 
 .kubectl:
