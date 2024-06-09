@@ -1,4 +1,4 @@
-image: ubuntu:22.04
+image: alpine:latest
 
 services:
   - docker:20.10.5-dind
@@ -17,24 +17,25 @@ variables:
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
-kubectl:
-  stage: build
-  script:
-    - apt install curl
-    - curl -LO https://dl.k8s.io/release/`curl -LS https://dl.k8s.io/release/stable.txt`/bin/linux/amd64/kubectl
-    - chmod +x ./kubectl
-    - sudo mv ./kubectl /usr/local/bin/kubectl
+# kubectl:
+#   stage: build
+#   script:
+#     - apt install curl
+#     - curl -LO https://dl.k8s.io/release/`curl -LS https://dl.k8s.io/release/stable.txt`/bin/linux/amd64/kubectl
+#     - chmod +x ./kubectl
+#     - sudo mv ./kubectl /usr/local/bin/kubectl
 
 
 test:
   # extends: .kubectl
   stage: build
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
     - ls /
-    - kubectl cluster-info 
-    - sed -i -e "s/K8S_CERTIFICATE_AUTH/$K8S_CERTIFICATE_AUTH/" config
-    - cp config /root/
-    - ls /root/
+    - kubectl cluster-info --kubeconfig $KUBECONFIG
+    # - sed -i -e "s/K8S_CERTIFICATE_AUTH/$K8S_CERTIFICATE_AUTH/" config
+    # - cp config /root/
+    # - ls /root/
     - kubectl cluster-info 
 
 builder_latest:
