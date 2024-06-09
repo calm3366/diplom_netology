@@ -14,11 +14,9 @@ variables:
   IMAGE_NAME: netology-web
   KUBE_URL: https://158.160.168.73
 
-
 .docker_login:
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
-
 
 .kubectl:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
