@@ -1,4 +1,4 @@
-image: alpine:latest
+image: ubuntu:22.04
 
 services:
   - docker:20.10.5-dind
@@ -30,7 +30,7 @@ variables:
 test:
   # extends: .kubectl
   stage: build
-  image: bitnami/kubectl:latest
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
     - kubectl config set-cluster k8s --server="$KUBE_URL" --insecure-skip-tls-verify=true
     - kubectl config set-credentials admin --token="$KUBE_TOKEN"
