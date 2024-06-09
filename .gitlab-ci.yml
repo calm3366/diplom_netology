@@ -2,7 +2,6 @@ image: docker:20.10.5
 
 services:
   - docker:20.10.5-dind
-  - registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image
 
 stages:
   - build
@@ -21,6 +20,7 @@ before_script:
 
 
 .kubectl:
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   stage: deploy
   script:
     - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
