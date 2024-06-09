@@ -18,16 +18,8 @@ variables:
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
-.kubectl:
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
-  script:
-    - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
-    - kubectl config set-credentials admin-user --token=$KUBE_TOKEN
-    - kubectl config set-context default --cluster=k8s --user=admin-user
-    - kubectl config use-context default
-    - kubectl get po
-
 builder_latest:
+  extends: .docker_login
   stage: build
   script:
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest .
@@ -39,13 +31,26 @@ builder_latest:
         - html/*
 
 builder_tag:
-  extends: 
-    - .docker_login
-    - .kubectl
-  stage: deploy
+  extends: .docker_login
+  stage: build
   script:
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG
+  rules:
+    - if: $CI_COMMIT_TAG
+      changes:
+        - Dockerfile
+        - html/*
+
+deploy:
+  stage: deploy
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
+  script:
+    - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
+    - kubectl config set-credentials admin-user --token=$KUBE_TOKEN
+    - kubectl config set-context default --cluster=k8s --user=admin-user
+    - kubectl config use-context default
+    # - kubectl get po
     - sed -i -e "s/IMAGE_TAG/$CI_COMMIT_TAG/" deployment-nginx.yaml
     - kubectl apply -f deployment-nginx.yaml 
   rules:
@@ -53,3 +58,12 @@ builder_tag:
       changes:
         - Dockerfile
         - html/*
+
+# .kubectl:
+#   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
+#   script:
+#     - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
+#     - kubectl config set-credentials admin-user --token=$KUBE_TOKEN
+#     - kubectl config set-context default --cluster=k8s --user=admin-user
+#     - kubectl config use-context default
+#     - kubectl get po
