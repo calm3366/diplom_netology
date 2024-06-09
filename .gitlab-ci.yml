@@ -51,7 +51,7 @@ builder_latest:
 builder_tag:
   extends: 
     - .docker_login
-    - .kubectl
+    # - .kubectl
   stage: build
   script:
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG .
