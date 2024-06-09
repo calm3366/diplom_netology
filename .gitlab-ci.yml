@@ -11,7 +11,7 @@ variables:
   YA_REGISTRY: cr.yandex
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
-  KUBE_URL: https://158.160.168.73=$
+  KUBE_URL: https://158.160.168.73
 
 .docker_login:
   stage: build
