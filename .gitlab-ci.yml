@@ -32,18 +32,20 @@ test:
   stage: build
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
-    - kubectl config set-cluster k8s --server="$KUBE_URL" --certificate-authority=ca.pem
-    - kubectl config set-credentials admin-user --token="$KUBE_TOKEN"
-    - kubectl config set-context default --cluster=k8s --user=admin-user
-    - kubectl config use-context default
-    - kubectl cluster-info 
+    - kubectl config set-cluster k8s --server=$KUBE_URL --certificate-authority=ca.pem --kubeconfig=test.kubeconfig
+    - kubectl config set-credentials admin-user --token="$KUBE_TOKEN" --kubeconfig=test.kubeconfig
+    - kubectl config set-context default --cluster=k8s --user=admin-user --kubeconfig=test.kubeconfig
+    - kubectl config use-context default --kubeconfig=test.kubeconfig
+    # - kubectl cluster-info 
+    - kubectl get no
+    - cat ~/.kube/config
     # - mkdir -p $HOME/.kube
     # - echo -n $KUBECONFIG > $HOME/.kube/config
     # - kubectl cluster-info
     # - sed -i -e "s/K8S_CERTIFICATE_AUTH/$K8S_CERTIFICATE_AUTH/" config
     # - cp config /root/
     # - ls /root/
-    # - kubectl cluster-info 
+    
 
 builder_latest:
   extends: .docker_login
