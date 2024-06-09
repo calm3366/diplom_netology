@@ -30,9 +30,11 @@ test:
   stage: build
   script:
     - ls /
-    - ls /root/
-    - cat config
+    - kubectl cluster-info 
+    - sed -i -e "s/K8S_CERTIFICATE_AUTH/$K8S_CERTIFICATE_AUTH/" config
     - cp config /root/
+    - ls /root/
+    - kubectl cluster-info 
 
 builder_latest:
   extends: .docker_login

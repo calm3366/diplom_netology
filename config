@@ -1,7 +1,7 @@
 apiVersion: v1
 clusters:
 - cluster:
-    certificate-authority-data: $K8S_CERTIFICATE_AUTH
+    certificate-authority-data: K8S_CERTIFICATE_AUTH
     server: https://158.160.168.73
   name: yc-managed-k8s-cati1q71safeo3ornbmk
 contexts:
