@@ -16,14 +16,12 @@ variables:
 
 
 .docker_login:
-  stage: deploy
   script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
 
 .kubectl:
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
-  stage: deploy
   script:
     - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
     - kubectl config set-credentials admin-user --token=$KUBE_TOKEN
