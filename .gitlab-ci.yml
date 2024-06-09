@@ -36,7 +36,7 @@ test:
     - kubectl config set-credentials admin-user --token=$KUBE_TOKEN --kubeconfig=test.kubeconfig
     - kubectl config set-context default --cluster=sa-test2 --user=admin-user --kubeconfig=test.kubeconfig
     - kubectl config use-context default --kubeconfig=test.kubeconfig
-    - curl 2ip.ru
+    - curl ifconfig.me
     - kubectl get namespace --kubeconfig=test.kubeconfig 
     # - kubectl config set-cluster k8s --server=$KUBE_URL --certificate-authority=ca.pem --kubeconfig=test.kubeconfig
     # - kubectl config set-credentials admin-user --token="$KUBE_TOKEN" --kubeconfig=test.kubeconfig
