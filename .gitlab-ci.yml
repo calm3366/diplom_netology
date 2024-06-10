@@ -24,6 +24,7 @@ test:
   stage: test
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
+    - mkdir test && cd test/
     - git remote add k8s $K8S_REP
     - git pull k8s
     - pwd
