@@ -18,12 +18,17 @@ variables:
   before_script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
-builder_latest:
-  stage: build
+.builder:
   extends: .login
   script:
-    - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest .
-    - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:latest
+    - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$TAG .
+    - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$TAG
+
+
+builder_latest:
+  stage: build
+  variables:
+    VAR: latest
   rules:
     - if: '$CI_COMMIT_TAG == null'
       changes:
@@ -32,10 +37,8 @@ builder_latest:
 
 builder_tag:
   stage: build
-  extends: .login
-  script:
-    - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG .
-    - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$CI_COMMIT_TAG
+  variables:
+    VAR: $CI_COMMIT_TAG
   rules:
     - if: $CI_COMMIT_TAG
       changes:
