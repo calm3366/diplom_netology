@@ -46,6 +46,7 @@ deploy:
   stage: deploy
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
+    - printenv
     - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
     - kubectl config set-credentials admin-user --token=$KUBE_TOKEN
     - kubectl config set-context default --cluster=k8s --user=admin-user
