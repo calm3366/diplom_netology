@@ -29,7 +29,7 @@ test:
     - git init
     - git remote add k8s $K8S_REP
     - git remote -v
-    - git pull k8s
+    - git pull k8s master
     - pwd
     - ls
     - ls k8s/
