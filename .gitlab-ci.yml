@@ -12,7 +12,6 @@ variables:
   YA_REGISTRY: cr.yandex
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
-  KUBE_URL: "https://158.160.168.73"
   K8S_REP: "https://$CI_REGISTRY_USER:$CI_JOB_TOKEN@gitlab.com/$CI_PROJECT_NAMESPACE/diplom.git"
 
 .login:
@@ -47,12 +46,12 @@ deploy:
   stage: deploy
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
-    - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
+    - K8S_MASTER_IP=$(<k8s-master-external-ip.txt)
+    - kubectl config set-cluster k8s --certificate-authority=$CERTIFICATE_K8S --server=$K8S_MASTER_IP
     - kubectl config set-credentials admin-user --token=$KUBE_TOKEN
     - kubectl config set-context default --cluster=k8s --user=admin-user
     - kubectl config use-context default
     - mkdir /test && cd /test
-    - echo $K8S_REP
     - git init
     - git remote add k8s $K8S_REP
     - git pull k8s master
