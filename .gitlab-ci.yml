@@ -27,6 +27,7 @@ variables:
 
 builder_latest:
   stage: build
+  extends: .builder
   variables:
     VAR: latest
   rules:
@@ -37,6 +38,7 @@ builder_latest:
 
 builder_tag:
   stage: build
+  extends: .builder
   variables:
     VAR: $CI_COMMIT_TAG
   rules:
