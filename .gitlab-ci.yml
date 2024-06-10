@@ -14,25 +14,25 @@ variables:
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
   KUBE_URL: https://158.160.168.73
-  K8S_REP: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/group01734935/diplom.git
+  K8S_REP: https://$CI_REGISTRY_USER:$CI_JOB_TOKEN@gitlab.com/$CI_PROJECT_NAMESPACE/diplom.git
 
 .login:
   before_script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
-test:
-  stage: test
-  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
-  script:
-    - mkdir /test && cd /test
-    - pwd
-    - git init
-    - git remote add k8s $K8S_REP
-    - git remote -v
-    - git pull k8s master
-    - pwd
-    - ls
-    - ls k8s/
+# test:
+#   stage: test
+#   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
+#   script:
+#     - mkdir /test && cd /test
+#     - pwd
+#     - git init
+#     - git remote add k8s $K8S_REP
+#     - git remote -v
+#     - git pull k8s master
+#     - pwd
+#     - ls
+#     - ls k8s/
 
 builder_latest:
   stage: build
@@ -62,14 +62,15 @@ deploy:
   stage: deploy
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
   script:
-    - ls /builds/group01734935/diplom
     - kubectl config set-cluster k8s --certificate-authority=ca.pem --server=$KUBE_URL
     - kubectl config set-credentials admin-user --token=$KUBE_TOKEN
     - kubectl config set-context default --cluster=k8s --user=admin-user
     - kubectl config use-context default
-    # - kubectl get po
-    - sed -i -e "s/IMAGE_TAG/$CI_COMMIT_TAG/" deployment-nginx.yaml
-    - kubectl apply -f deployment-nginx.yaml 
+    - mkdir /test && cd /test
+    - git remote add k8s $K8S_REP
+    - git pull k8s master
+    - sed -i -e "s/IMAGE_TAG/$CI_COMMIT_TAG/" k8s/deployment-nginx.yaml
+    - kubectl apply -f k8s/deployment-nginx.yaml 
   rules:
     - if: $CI_COMMIT_TAG
       changes:
