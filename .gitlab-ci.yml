@@ -15,7 +15,8 @@ variables:
   KUBE_URL: https://158.160.168.73
 
 .login:
-   script: docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
+  before_script:
+    - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
 
 builder_latest:
   stage: build
