@@ -4,6 +4,7 @@ services:
   - docker:20.10.5-dind
 
 stages:
+  - test
   - build
   - deploy
 
@@ -13,10 +14,18 @@ variables:
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
   KUBE_URL: https://158.160.168.73
+  K8S_REP: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/group01734935/diplom.git
 
 .login:
   before_script:
     - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
+
+test:
+  stage: test
+  script:
+    - git remote set-url origin $K8S_REP
+    - pwd
+    - ls k8s/
 
 builder_latest:
   stage: build
