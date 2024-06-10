@@ -14,7 +14,7 @@ variables:
   YA_REGISTRY_ID: crpdgkjqba4kiu6sm7bq
   IMAGE_NAME: netology-web
   KUBE_URL: https://158.160.168.73
-  K8S_REP: https://$CI_REGISTRY_USER:$CI_JOB_TOKEN@gitlab.com/$CI_PROJECT_NAMESPACE/diplom.git
+  K8S_REP: https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.com/group01734935/diplom.git
 
 .login:
   before_script:
@@ -67,6 +67,7 @@ deploy:
     - kubectl config set-context default --cluster=k8s --user=admin-user
     - kubectl config use-context default
     - mkdir /test && cd /test
+    - echo $K8S_REP
     - git remote add k8s $K8S_REP
     - git pull k8s master
     - sed -i -e "s/IMAGE_TAG/$CI_COMMIT_TAG/" k8s/deployment-nginx.yaml
