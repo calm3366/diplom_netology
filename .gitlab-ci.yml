@@ -29,7 +29,7 @@ builder_latest:
   stage: build
   extends: .builder
   variables:
-    VAR: latest
+    TAG: latest
   rules:
     - if: '$CI_COMMIT_TAG == null'
       changes:
@@ -40,7 +40,7 @@ builder_tag:
   stage: build
   extends: .builder
   variables:
-    VAR: $CI_COMMIT_TAG
+    TAG: $CI_COMMIT_TAG
   rules:
     - if: $CI_COMMIT_TAG
       changes:
