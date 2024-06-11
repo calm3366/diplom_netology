@@ -23,7 +23,10 @@ variables:
   script:
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$TAG
-
+  rules:
+    - changes:
+      - Dockerfile
+       - html/*
 
 builder_latest:
   stage: build
@@ -32,9 +35,6 @@ builder_latest:
     TAG: latest
   rules:
     - if: '$CI_COMMIT_TAG == null'
-      changes:
-        - Dockerfile
-        - html/*
 
 builder_tag:
   stage: build
@@ -43,9 +43,7 @@ builder_tag:
     TAG: $CI_COMMIT_TAG
   rules:
     - if: $CI_COMMIT_TAG
-      changes:
-        - Dockerfile
-        - html/*
+      
 
 deploy:
   stage: deploy
