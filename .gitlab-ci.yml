@@ -14,13 +14,9 @@ variables:
   IMAGE_NAME: netology-web
   K8S_REP: "https://$CI_REGISTRY_USER:$CI_JOB_TOKEN@gitlab.com/$CI_PROJECT_NAMESPACE/diplom.git"
 
-.login:
-  before_script:
-    - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
-
 .builder:
-  extends: .login
   script:
+    - docker login -u $YA_REGISTRY_LOGIN -p $YA_REGISTRY_PASSWORD $YA_REGISTRY
     - docker build -t $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$TAG .
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$TAG
   rules:
@@ -44,7 +40,6 @@ builder_tag:
   rules:
     - if: $CI_COMMIT_TAG
       
-
 deploy:
   stage: deploy
   image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-deploy-image"
