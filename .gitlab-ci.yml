@@ -25,8 +25,8 @@ variables:
     - docker push $YA_REGISTRY/$YA_REGISTRY_ID/$IMAGE_NAME:$TAG
   rules:
     - changes:
-      - Dockerfile
-       - html/*
+        - Dockerfile
+        - html/*
 
 builder_latest:
   stage: build
