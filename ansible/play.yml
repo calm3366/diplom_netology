@@ -1,0 +1,55 @@
+---
+- name: Install Docker
+  tags: docker
+  hosts: docker
+  tasks:
+    - name: Install Docker
+      ansible.builtin.apt:
+        name:
+          - docker.io
+        update_cache: true
+      become: true
+    - name: Copy daemon.json file for add mirrors to Docker
+      ansible.builtin.copy:
+        src: daemon.json
+        dest: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: '0644'
+      become: true
+    - name: Restart service Docker
+      ansible.builtin.systemd:
+        name: docker
+        daemon_reload: true
+        state: restarted
+      become: true
+    - name: Authorization in Yandex Registry for give docker image
+      ansible.builtin.command: "docker login --username oauth --password {{ oauth_key }} cr.yandex"
+      become: true
+    - name: Create directrory for Docker image
+      ansible.builtin.file:
+        state: directory
+        path: /home/admin/docker/
+        owner: admin
+        group: admin
+        mode: "0644"
+      become: true
+    - name: Copy Dockerfile and html config
+      ansible.builtin.copy:
+        src: ../docker/
+        dest: /home/admin/docker/
+        owner: admin
+        group: admin
+        mode: '0644' 
+      become: true
+    - name: Build an image and push it to Yandex private repo
+      community.docker.docker_image:
+        build:
+          path: /home/admin/docker
+        name: cr.yandex/{{ ya_registry_id }}/netology-web
+        tag: "{{ image_tag }}"
+        push: true
+        source: build
+      become: true
+
+

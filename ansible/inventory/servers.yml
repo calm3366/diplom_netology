@@ -1,0 +1,6 @@
+---
+all:
+  hosts:
+    docker:
+      ansible_host: 178.154.207.39
+      ansible_user: admin
